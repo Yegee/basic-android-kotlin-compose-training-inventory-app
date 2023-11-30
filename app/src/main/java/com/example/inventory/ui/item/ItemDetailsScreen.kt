@@ -208,6 +208,16 @@ fun ItemDetails(
                     )
                 )
             )
+            ItemDetailsRow(
+                labelResID = R.string.id,
+                itemDetail = item.id.toString(),
+                modifier = Modifier.padding(
+                    horizontal = dimensionResource(
+                        id = R.dimen
+                            .padding_medium
+                    )
+                )
+            )
         }
 
     }

@@ -37,10 +37,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -114,25 +118,57 @@ fun HomeScreen(
 private fun HomeBody(
     itemList: List<Item>, onItemClick: (Int) -> Unit, modifier: Modifier = Modifier
 ) {
+    var searchText by remember { mutableStateOf("")}
+    val filteredItemsbyName = itemList.filter { it.name.contains(searchText, ignoreCase = true) }
+    val filterItemsbyID = itemList.filter { it.name.contains(searchText, ignoreCase = true) }
+
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
-        if (itemList.isEmpty()) {
-            Text(
-                text = stringResource(R.string.no_item_description),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge
-            )
-        } else {
+        // Search bar
+        TextField(
+            value = searchText,
+            onValueChange = { searchText = it },
+            label = { Text("Enter id or name") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            singleLine = true
+        )
+        if (filteredItemsbyName.isNotEmpty() and filterItemsbyID.isNotEmpty()) {
             InventoryList(
                 itemList = itemList,
                 onItemClick = { onItemClick(it.id) },
                 modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
             )
+
+        } else if(filteredItemsbyName.isNotEmpty()){
+//            InventoryList(
+//                itemList = filteredItemsbyName,
+//                onItemClick = { onItemClick(it.id) },
+//                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
+//            )
         }
+         else if(filterItemsbyID.isNotEmpty()) {
+//            InventoryList(
+//                itemList = filterItemsbyID,
+//                onItemClick = { onItemClick(it.id) },
+//                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
+//            )
+        }
+        else{
+            Text(
+                text = stringResource(R.string.no_item_description),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge
+            )
+            }
     }
 }
+
+
 
 @Composable
 private fun InventoryList(
