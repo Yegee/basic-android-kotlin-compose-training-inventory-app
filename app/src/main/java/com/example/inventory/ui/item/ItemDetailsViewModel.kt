@@ -64,17 +64,6 @@ class ItemDetailsViewModel(
         }
     }
 
-    /**
-     *  Reduces the item quantity by one and update the [ItemsRepository]'s data source
-     */
-    fun reduceQuanityByNumber(amount: Int){
-        viewModelScope.launch {
-            val currentItem = uiState.value.itemDetails.toItem()
-            if (currentItem.quantity >= amount) {
-                itemsRepository.updateItem(currentItem.copy(quantity = currentItem.quantity - amount))
-            }
-        }
-    }
 
     /**
      * Deletes the item from the [ItemsRepository]'s data source.

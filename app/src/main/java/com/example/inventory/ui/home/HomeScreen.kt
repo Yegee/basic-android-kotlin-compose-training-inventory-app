@@ -29,6 +29,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -83,6 +84,22 @@ fun HomeScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = navigateToItemEntry,
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large))
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = stringResource(R.string.item_entry_title)
+                )
+            }
+        },
+    ){
+
+    }
+    Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             InventoryTopAppBar(
@@ -118,53 +135,23 @@ fun HomeScreen(
 private fun HomeBody(
     itemList: List<Item>, onItemClick: (Int) -> Unit, modifier: Modifier = Modifier
 ) {
-    var searchText by remember { mutableStateOf("")}
-    val filteredItemsbyName = itemList.filter { it.name.contains(searchText, ignoreCase = true) }
-    val filterItemsbyID = itemList.filter { it.name.contains(searchText, ignoreCase = true) }
-
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
-        // Search bar
-        TextField(
-            value = searchText,
-            onValueChange = { searchText = it },
-            label = { Text("Enter id or name") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            singleLine = true
-        )
-        if (filteredItemsbyName.isNotEmpty() and filterItemsbyID.isNotEmpty()) {
-            InventoryList(
-                itemList = itemList,
-                onItemClick = { onItemClick(it.id) },
-                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
-            )
-
-        } else if(filteredItemsbyName.isNotEmpty()){
-//            InventoryList(
-//                itemList = filteredItemsbyName,
-//                onItemClick = { onItemClick(it.id) },
-//                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
-//            )
-        }
-         else if(filterItemsbyID.isNotEmpty()) {
-//            InventoryList(
-//                itemList = filterItemsbyID,
-//                onItemClick = { onItemClick(it.id) },
-//                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
-//            )
-        }
-        else{
+        if (itemList.isEmpty()) {
             Text(
                 text = stringResource(R.string.no_item_description),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge
             )
-            }
+        } else {
+            InventoryList(
+                itemList = itemList,
+                onItemClick = { onItemClick(it.id) },
+                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
+            )
+        }
     }
 }
 
